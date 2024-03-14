@@ -21,13 +21,13 @@ import { useHistory } from 'react-router';
 import { FixedSizeList, ListChildComponentProps } from 'react-window';
 import { useClustersConf } from '../../../lib/k8s';
 import Event from '../../../lib/k8s/event';
-import { createRouteURL } from '../../../lib/router';
+// import { createRouteURL } from '../../../lib/router';
 import { useTypedSelector } from '../../../redux/reducers/reducers';
 import { DateLabel } from '../../common';
 import Empty from '../../common/EmptyContent';
 import {
   defaultMaxNotificationsStored,
-  loadNotifications,
+  // loadNotifications,
   Notification,
   NotificationIface,
   setNotifications,
@@ -191,42 +191,42 @@ export default function Notifications() {
 
   useEffect(() => {
     const notificationsToShow: NotificationIface[] = [];
-    let currentNotifications = notifications;
-    let changed = false;
+    const currentNotifications = notifications;
+    const changed = false;
 
-    if (currentNotifications.length === 0) {
-      currentNotifications = loadNotifications();
-      changed = currentNotifications.length > 0;
-    }
+    // if (currentNotifications.length === 0) {
+    //   currentNotifications = loadNotifications();
+    //   changed = currentNotifications.length > 0;
+    // }
 
-    for (const [cluster, warningsInfo] of Object.entries(warnings)) {
-      const clusterWarnings = warningsInfo.warnings || [];
-      if (clusterWarnings.length === 0) {
-        continue;
-      }
+    // for (const [cluster, warningsInfo] of Object.entries(warnings)) {
+    //   const clusterWarnings = warningsInfo.warnings || [];
+    //   if (clusterWarnings.length === 0) {
+    //     continue;
+    //   }
 
-      clusterWarnings.forEach((event: Event) => {
-        const alreadyInNotificationList = !!currentNotifications.find(
-          notification => notification.id === event.metadata.uid
-        );
+    //   clusterWarnings.forEach((event: Event) => {
+    //     const alreadyInNotificationList = !!currentNotifications.find(
+    //       notification => notification.id === event.metadata.uid
+    //     );
 
-        if (alreadyInNotificationList) {
-          return;
-        }
+    //     if (alreadyInNotificationList) {
+    //       return;
+    //     }
 
-        const message = event.message;
-        const date = new Date(event.metadata.creationTimestamp).getTime();
-        const notification = new Notification({ message, date, cluster });
-        notification.id = event.metadata.uid;
-        notification.url =
-          createRouteURL('cluster', { cluster }) + `?eventsFilter=${notification.id}`;
+    //     const message = event.message;
+    //     const date = new Date(event.metadata.creationTimestamp).getTime();
+    //     const notification = new Notification({ message, date, cluster });
+    //     notification.id = event.metadata.uid;
+    //     notification.url =
+    //       createRouteURL('cluster', { cluster }) + `?eventsFilter=${notification.id}`;
 
-        changed = true;
+    //     changed = true;
 
-        const notiJson = notification.toJSON();
-        notificationsToShow.push(notiJson);
-      });
-    }
+    //     const notiJson = notification.toJSON();
+    //     notificationsToShow.push(notiJson);
+    //   });
+    // }
 
     // It's important to dispatch only if something changed, otherwise we will get into an infinite loop.
     if (changed) {
